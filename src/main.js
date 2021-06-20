@@ -11,7 +11,7 @@ import CharacterPage from './Pages/CharacterPage.vue';
 const store = createStore({
     state(){
         return {
-            characterName : ''
+            characterId : '1'
         }
     }
 });
@@ -19,7 +19,8 @@ const route = createRouter({
     history : createWebHistory(),
     routes : [
         {path:'/', component: MainPage},
-        {path: '/character', component : CharacterPage}
+        {path: '/character', component : CharacterPage},
+        {path: '/character/:id', component : CharacterPage}
     ]
 });
 const app = createApp(App);

@@ -1,13 +1,13 @@
 <template>
   <section class="col s3 hoverable">
-      <h5>Episode title</h5>
-      <p>Episode Date</p>
+      <h5>{{episodeTitle}}</h5>
+      <p>{{episodeDate}}</p>
   </section>
 </template>
 
 <script>
 export default {
-
+  props: ['episodeTitle','episodeDate']
 }
 </script>
 

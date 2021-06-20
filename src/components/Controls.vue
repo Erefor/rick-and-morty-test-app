@@ -28,7 +28,7 @@
 <script>
 export default {
     props : ['originArray'],
-    emits : ['filterOrigin','filterStatus'],
+    emits : ['filterOrigin','filterStatus','getCharacter'],
     data(){
         return {
             characterName : '',
@@ -55,6 +55,10 @@ export default {
                 this.$emit('filterStatus', {status : this.characterStatus, origin:this.originName});
             }
             
+        },
+        getData(){
+            this.$emit('getCharacter',{name:this.characterName});
+            this.characterName = '';
         }
     }
 }

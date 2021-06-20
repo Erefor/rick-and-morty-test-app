@@ -4,6 +4,7 @@
       :originArray="originArray" 
       @filterOrigin="filtrarOrigin"
       @filterStatus="filtrarStatus"
+      @getCharacter="getCharacterFromInput"
       />
       <div class="row">
         <CharacterCard 
@@ -13,8 +14,8 @@
         :estado="character.status"
         :origen="character.origin.name"
         :img="character.image"
+        @click="goToDetails(character)"
         />
-        <h3 class="col s12" v-if="avaibleData">No hay resultados</h3>
       </div>
       <ul class="pagination center">
         <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
@@ -40,7 +41,6 @@ export default {
     this.allCharacters = this.data['results'];
     this.nextPage = this.data['info']['next'];
     this.previusPage = this.data['info']['prev'];
-    console.log(this.allCharacters);
     for(let character in this.allCharacters){
       this.originArray.push(this.allCharacters[character].origin.name) 
     }
@@ -82,14 +82,23 @@ export default {
       }else if(e.status === 'All'){
         this.filterCharacters = this.allCharacters.filter((character)=> character.origin.name === e.origin);
       }else{
-        
         this.filterCharacters = this.allCharacters.filter((character)=> character['status'] === e.status && character.origin.name === e.origin );
       }
-    }
-  },
-  computed:{
-    avaibleData(){
-      return this.filterCharacters.lenght === 0 ? false : true;
+    },
+    goToDetails(character){
+      this.$store.state.characterId = character.id;
+      this.$router.push('/character');
+    },
+    async getCharacterFromInput(character){
+      this.filterCharacters = []; this.originArray = []; this.allCharacters = [];
+      let data = await this.axios.get(`https://rickandmortyapi.com/api/character/?name=${character.name}`);
+      console.log(data);
+      this.filterCharacters = data.data['results'];
+      for(let character in this.filterCharacters){
+      this.originArray.push(this.filterCharacters[character].origin.name) 
+      }
+      let array = new Set(this.originArray);
+      this.originArray = [...array];
     }
   }
 }

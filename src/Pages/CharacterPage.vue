@@ -1,29 +1,35 @@
 <template>
   <div class="container">
     <section class="row">
-      <h4 class="col s12">Nombre de personaje</h4>
+      <h4 class="col s12">{{characterName}}</h4>
       <div class="col s4">
-        <img src="https://www.tonica.la/__export/1595702332011/sites/debate/img/2020/07/25/rick-and-morty-escritores-trabajan-en-la-temporada-6.jpg_1902800913.jpg" alt="Character Picture" class="responsive-img">
+        <img :src="characterImg" class="responsive-img">
       </div>
       <div class="col s8">
-        <h6><strong>Status:</strong> Alive</h6>
-        <h6><strong>Gender:</strong> Male</h6>
-        <h6><strong>Origin:</strong> Earth</h6>
-        <h6><strong>Spacies:</strong> Human</h6>
+        <h6><strong>Status:</strong> {{characterStatus}}</h6>
+        <h6><strong>Gender:</strong> {{characterGender}}</h6>
+        <h6><strong>Origin:</strong> {{characterOrigin}}</h6>
+        <h6><strong>Spacies:</strong> {{characterSpecies}}</h6>
       </div>
     </section>
     <section class="row">
         <h4>Episodios donde apareció</h4>
-        <episode-card />
-        <episode-card />
-        <episode-card />
-        <episode-card />
+        <episode-card v-for="(episode, index) in episodesInfo" 
+        :key="index"
+        :episodeTitle="episode.title"
+        :episodeDate="episode.date"
+        />
     </section>
     <section class="row">
       <h4 class="col s12">Personajes Interesantes</h4>
-      <CharacterCard :name="perro" :origen="tierra" :estado="vivo"/>
-      <CharacterCard :name="perro" :origen="tierra" :estado="vivo"/>
-      <CharacterCard :name="perro" :origen="tierra" :estado="vivo"/>
+      <CharacterCard 
+      v-for="(character, index) in randomDudesInfo"
+      :key="index"
+      :name="character.name" 
+      :origen="character.origin.name" 
+      :estado="character.status"
+      :img="character.image"
+      @click="goToDetails"/>
     </section>
   </div>
 </template>
@@ -35,6 +41,52 @@ export default {
   components:{
     EpisodeCard,
     CharacterCard
+  },
+  async mounted(){
+    let id = this.$store.state.characterId;
+    let resp = await this.axios.get(`https://rickandmortyapi.com/api/character/${id}`);
+    let data = resp.data;
+    this.characterName = data.name;
+    this.characterStatus = data.status;
+    this.characterGender = data.gender;
+    this.characterOrigin = data.origin.name;
+    this.characterSpecies = data.species;
+    this.characterImg = data.image;
+    this.episodes = data.episode;
+    this.getEpisodes();
+    this.randomDudes();
+  },
+  data(){
+    return{
+      characterName : '',
+      characterGender : '',
+      characterStatus : '',
+      characterOrigin : '',
+      characterSpecies : '',
+      characterImg : '',
+      episodes : [],
+      episodesInfo :[],
+      randomDudesInfo : [],
+    }
+  },
+  methods:{
+    async getEpisodes(){
+      for(let i =0; i< 4;i++){
+        let info = await this.axios.get(this.episodes[i]);
+        this.episodesInfo.push({title : info.data.name, date: info.data.air_date});
+      }
+    },
+    async randomDudes(){
+      let one = Math.floor(Math.random() * 100) + 1;
+      let two = Math.floor(Math.random() * 100) + 1;
+      let three = Math.floor(Math.random() * 100) + 1;
+      let data = await this.axios.get(`https://rickandmortyapi.com/api/character/${one},${two},${three}`);
+      this.randomDudesInfo = data.data;
+    },
+    goToDetails(character){
+      this.$store.state.characterId = character.id;
+      this.$router.push('/character/'+this.$store.state.characterId);
+    }
   }
 }
 </script>
