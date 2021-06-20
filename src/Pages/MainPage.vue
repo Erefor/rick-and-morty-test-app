@@ -13,7 +13,6 @@
         :estado="character.status"
         :origen="character.origin.name"
         :img="character.image"
-        @click="imprimir(character)"
         />
         <h3 class="col s12" v-if="avaibleData">No hay resultados</h3>
       </div>
@@ -71,7 +70,7 @@ export default {
       }else if(e.origin === 'All'){
         this.filterCharacters = this.allCharacters.filter((character)=> character['status'] === e.status);
       }else{
-        console.log(e);
+        
         this.filterCharacters = this.allCharacters.filter((character)=> character.origin.name === e.origin && character['status'] === e.status);
       }
     },
@@ -83,12 +82,9 @@ export default {
       }else if(e.status === 'All'){
         this.filterCharacters = this.allCharacters.filter((character)=> character.origin.name === e.origin);
       }else{
-        console.log(e);
+        
         this.filterCharacters = this.allCharacters.filter((character)=> character['status'] === e.status && character.origin.name === e.origin );
       }
-    },
-    imprimir(e){
-      console.log(e);
     }
   },
   computed:{

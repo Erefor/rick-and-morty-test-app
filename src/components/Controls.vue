@@ -55,9 +55,6 @@ export default {
                 this.$emit('filterStatus', {status : this.characterStatus, origin:this.originName});
             }
             
-        },
-        imprimir(){
-            console.log(this.characterStatus);
         }
     }
 }
