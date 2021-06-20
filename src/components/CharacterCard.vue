@@ -1,7 +1,7 @@
 <template>
   
     <div class="col s3">
-      <div class="card medium">
+      <div @click="click" class="card medium hoverable">
         <div class="card-image">
           <img src="https://www.tonica.la/__export/1595702332011/sites/debate/img/2020/07/25/rick-and-morty-escritores-trabajan-en-la-temporada-6.jpg_1902800913.jpg">
         </div>
@@ -22,10 +22,17 @@ export default {
       estado: 'alive',
       origen: 'Earth'
     }
+  },
+  methods : {
+    click(){
+      alert('Click');
+    }
   }
 }
 </script>
 
 <style>
-
+.card{
+  cursor: pointer;
+}
 </style>
