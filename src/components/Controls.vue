@@ -7,17 +7,19 @@
         <p>Filtrar por:</p>
     </div>
     <div class="input-field col s2">
-        <select class="browser-default">
-            <option value="1" disabled selected>Status</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
+        <select class="browser-default" v-model="characterStatus" @change="filterStatus">
+            <option value="Status" selected disabled>Status</option>
+            <option value="All">All</option>
+            <option value="Alive">Vivo</option>
+            <option value="Dead">Muerto</option>
+            <option value="unknown">unknown</option>
         </select>
     </div>
     <div class="input-field col s2">
-        <select class="browser-default">
-            <option value="1" disabled selected>Origin</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
+        <select class="browser-default" v-model="originName" @change="filterOrigin">
+            <option value="Origin" selected disabled>Origin</option>
+            <option value="All">All</option>
+            <option :value="origin" v-for="(origin, index) in originArray" :key="index">{{origin}}</option>
         </select>
     </div>
   </form>
@@ -25,15 +27,37 @@
 
 <script>
 export default {
+    props : ['originArray'],
+    emits : ['filterOrigin','filterStatus'],
     data(){
         return {
             characterName : '',
+            originName : 'Origin',
+            characterStatus : 'Status'
         }
     },
     methods:{
-        getData(){
-            alert(this.characterName);
-            this.characterName = '';
+        filterOrigin(){
+            if(this.originName === 'Origin' || this.characterStatus === 'Status'){
+                this.originName = 'All';
+                this.characterStatus = 'All';
+                this.$emit('filterOrigin', {origin : this.originName, status : this.characterStatus});
+            }else{
+            this.$emit('filterOrigin', {origin : this.originName, status : this.characterStatus});
+            }
+        },
+        filterStatus(){
+            if(this.characterStatus === 'Status' || this.originName === 'Origin'){
+                this.characterStatus = 'All';
+                this.originName = 'All';
+                this.$emit('filterStatus', {status : this.characterStatus, origin:this.originName});
+            }else{
+                this.$emit('filterStatus', {status : this.characterStatus, origin:this.originName});
+            }
+            
+        },
+        imprimir(){
+            console.log(this.characterStatus);
         }
     }
 }

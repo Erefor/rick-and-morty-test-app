@@ -21,9 +21,9 @@
     </section>
     <section class="row">
       <h4 class="col s12">Personajes Interesantes</h4>
-      <CharacterCard />
-      <CharacterCard />
-      <CharacterCard />
+      <CharacterCard :name="perro" :origen="tierra" :estado="vivo"/>
+      <CharacterCard :name="perro" :origen="tierra" :estado="vivo"/>
+      <CharacterCard :name="perro" :origen="tierra" :estado="vivo"/>
     </section>
   </div>
 </template>

@@ -1,14 +1,14 @@
 <template>
   
     <div class="col s3">
-      <div @click="click" class="card medium hoverable">
+      <div class="card medium hoverable">
         <div class="card-image">
-          <img src="https://www.tonica.la/__export/1595702332011/sites/debate/img/2020/07/25/rick-and-morty-escritores-trabajan-en-la-temporada-6.jpg_1902800913.jpg">
+          <img :src="img">
         </div>
         <div class="card-content">
-          <h5>Rick Sánchez</h5>
+          <h5>{{name}}</h5>
           <p><strong>Estado:</strong> {{estado}}</p>
-          <p><strong>Origen:</strong> {{estado}}</p>
+          <p><strong>Origen:</strong> {{origen}}</p>
         </div>
       </div>
     </div>
@@ -17,12 +17,7 @@
 
 <script>
 export default {
-  data(){
-    return {
-      estado: 'alive',
-      origen: 'Earth'
-    }
-  },
+  props:['name','estado','origen','img'],
   methods : {
     click(){
       alert('Click');
