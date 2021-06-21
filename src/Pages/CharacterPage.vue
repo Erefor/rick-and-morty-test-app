@@ -29,7 +29,8 @@
       :origen="character.origin.name" 
       :estado="character.status"
       :img="character.image"
-      @click="goToDetails"/>
+      :id="character.id"
+      />
     </section>
   </div>
 </template>
@@ -42,19 +43,8 @@ export default {
     EpisodeCard,
     CharacterCard
   },
-  async mounted(){
-    let id = this.$store.state.characterId;
-    let resp = await this.axios.get(`https://rickandmortyapi.com/api/character/${id}`);
-    let data = resp.data;
-    this.characterName = data.name;
-    this.characterStatus = data.status;
-    this.characterGender = data.gender;
-    this.characterOrigin = data.origin.name;
-    this.characterSpecies = data.species;
-    this.characterImg = data.image;
-    this.episodes = data.episode;
-    this.getEpisodes();
-    this.randomDudes();
+  mounted(){
+    this.loadData();  
   },
   data(){
     return{
@@ -86,6 +76,26 @@ export default {
     goToDetails(character){
       this.$store.state.characterId = character.id;
       this.$router.push('/character/'+this.$store.state.characterId);
+    },
+    async loadData(){
+      let id = this.$store.state.characterId;
+      let resp = await this.axios.get(`https://rickandmortyapi.com/api/character/${id}`);
+      let data = resp.data;
+      this.characterName = data.name;
+      this.characterStatus = data.status;
+      this.characterGender = data.gender;
+      this.characterOrigin = data.origin.name;
+      this.characterSpecies = data.species;
+      this.characterImg = data.image;
+      this.episodes = data.episode;
+      this.getEpisodes();
+      this.randomDudes();
+    }
+  },
+  watch:{
+    $route(){
+      this.episodesInfo = [];
+      this.loadData();
     }
   }
 }

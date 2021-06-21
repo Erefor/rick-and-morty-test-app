@@ -20,7 +20,7 @@ const route = createRouter({
     history : createWebHistory(),
     routes : [
         {path:'/', component: MainPage},
-        {path: '/character', component : CharacterPage},
+        {path: '/character/:id', component : CharacterPage},
         {path: '/:notFound(.*)',component : NotFound}
     ]
 });

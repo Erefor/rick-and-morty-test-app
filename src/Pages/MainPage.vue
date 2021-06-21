@@ -15,7 +15,7 @@
         :estado="character.status"
         :origen="character.origin.name"
         :img="character.image"
-        @click="goToDetails(character)"
+        :id="character.id"
         />
       </div>
       <ul class="pagination center">
@@ -77,10 +77,6 @@ export default {
       }else{
         this.filterCharacters = this.allCharacters.filter((character)=> character['status'] === e.status && character.origin.name === e.origin );
       }
-    },
-    goToDetails(character){
-      this.$store.state.characterId = character.id;
-      this.$router.push('/character');
     },
     async getCharacterFromInput(characterData){
       console.log(characterData);
