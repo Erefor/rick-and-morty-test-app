@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="progress" v-show="!loading">
+        <div class="indeterminate"></div>
+    </div>
     <section class="row">
       <h4 class="col s12">{{characterName}}</h4>
       <div class="col s4">
@@ -57,6 +60,7 @@ export default {
       episodes : [],
       episodesInfo :[],
       randomDudesInfo : [],
+      loading : true,
     }
   },
   methods:{
@@ -78,6 +82,7 @@ export default {
       this.$router.push('/character/'+this.$store.state.characterId);
     },
     async loadData(){
+      this.loading = false;
       let id = this.$store.state.characterId;
       let resp = await this.axios.get(`https://rickandmortyapi.com/api/character/${id}`);
       let data = resp.data;
@@ -90,6 +95,7 @@ export default {
       this.episodes = data.episode;
       this.getEpisodes();
       this.randomDudes();
+      this.loading = true;
     }
   },
   watch:{

@@ -1,5 +1,8 @@
 <template>
     <div class="container">
+      <div class="progress" v-if="loading == true">
+        <div class="indeterminate"></div>
+      </div>
       <Controls 
       :originArray="originArray" 
       @filterOrigin="filtrarOrigin"
@@ -7,6 +10,7 @@
       @getCharacter="getCharacterFromInput"
       />
       <div class="row">
+        <h2 v-if="!isThereData">No results</h2>
         <CharacterCard 
         v-for="(character, index) in filterCharacters" 
         :key="index"
@@ -24,7 +28,11 @@
         <li class="waves-effect"><a href="#!">{{nextPageInt}}</a></li>
         <li class="waves-effect"><a href="#!" @click="getNextPageData"><i class="material-icons">chevron_right</i></a></li>
       </ul>
+      <div class="progress" v-if="loading == true">
+        <div class="indeterminate"></div>
+      </div>
     </div>
+    
 </template>
 
 <script>
@@ -36,6 +44,7 @@ export default {
     Controls
   },
   mounted(){
+    this.loading = true;
     this.getData(0);  
   },
   data(){
@@ -51,6 +60,7 @@ export default {
       nextPageInt : 0,
       currentPage : 1,
       prevPageInt: 0,
+      loading : false,
       isThereData : true,
       characterName : ''
     }
@@ -81,7 +91,6 @@ export default {
       }
     },
     async getCharacterFromInput(characterData){
-      console.log(characterData);
       this.characterName = characterData['name'];
       this.getData(1)
     },
@@ -92,6 +101,7 @@ export default {
       this.getData(3);
     },
     async getData(check){
+      this.loading = true;
       switch (check) {
         case 0:
           //Start
@@ -114,7 +124,10 @@ export default {
           break;
       }
       let resp = await this.axios.get(this.url);
+      console.log(resp.status);
       if(resp.status === 200){
+        this.isThereData = true;
+        this.loading = false;
         this.data = resp.data;
         this.allCharacters = this.data['results'];
         this.nextPage = this.data['info']['next'];
@@ -128,12 +141,12 @@ export default {
         this.nextPageInt = this.nextPage.match(/\d+/)[0];
         this.prevPageInt = this.previusPage.match(/\d+/)[0];
         this.currentPage = this.nextPageInt -1;
-        if(this.prevPageInt === null && this.nextPageInt ===2){
-          this.prevPageInt = 0;
-          this.currentPage = 1;
-        }
-      }else{
-        this.isThereData = false;
+        this.previusPage === null ? this.currentPage = this.nextPageInt -1 : this.currentPage;
+        this.nextPage === null ? this.currentPage = this.prevPageInt + 1 : this.currentPage;
+      }else if(resp === null){
+        console.log(resp.status);
+        this.loading = false;
+        this.isThereData = true;
       }
     },
   }
