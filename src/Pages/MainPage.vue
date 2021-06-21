@@ -36,23 +36,8 @@ export default {
     CharacterCard,
     Controls
   },
-  async mounted(){
-    let resp = await this.axios.get(this.url);
-    if(resp.status === 200){
-      this.data = resp.data;
-      this.allCharacters = this.data['results'];
-      this.nextPage = this.data['info']['next'];
-      this.previusPage = this.data['info']['prev'];
-      for(let character in this.allCharacters){
-        this.originArray.push(this.allCharacters[character].origin.name) 
-      }
-      let array = new Set(this.originArray);
-      this.originArray = [...array];
-      this.filterCharacters = this.allCharacters;
-    }else{
-      this.isThereData = false;
-    }
-    
+  mounted(){
+    this.getData(0);  
   },
   data(){
     return{
@@ -65,6 +50,7 @@ export default {
       previusPage : '',
       nextPage : '',
       isThereData : true,
+      characterName : ''
     }
   },
   methods:{
@@ -96,24 +82,40 @@ export default {
       this.$store.state.characterId = character.id;
       this.$router.push('/character');
     },
-    async getCharacterFromInput(character){
-      this.filterCharacters = []; this.originArray = []; this.allCharacters = [];
-      let data = await this.axios.get(`https://rickandmortyapi.com/api/character/?name=${character.name}`);
-      if(data.status === 200){
-        this.allCharacters = data.data['results'];
-        this.filterCharacters = data.data['results'];
-        for(let character in this.filterCharacters){
-        this.originArray.push(this.filterCharacters[character].origin.name) 
-        }
-        let array = new Set(this.originArray);
-        this.originArray = [...array];
-      }else{
-        this.isThereData = false;
-      }
-      
+    async getCharacterFromInput(characterData){
+      console.log(characterData);
+      this.characterName = characterData['name'];
+      this.getData(1)
     },
     async getNextPageData(){
-      let resp = await this.axios.get(this.nextPage);
+      this.getData(2);
+    },
+    async getPrevPageData(){
+      this.getData(3);
+    },
+    async getData(check){
+      switch (check) {
+        case 0:
+          //Start
+          this.url = "https://rickandmortyapi.com/api/character";
+          break;
+        case 1:
+          //Get Character from input
+          this.filterCharacters = []; this.originArray = []; this.allCharacters = [];
+          this.url = `https://rickandmortyapi.com/api/character/?name=${this.characterName}`;
+          break;
+        case 2:
+          //Next Page
+          this.url = this.nextPage;
+          break;
+        case 3:
+          //Prev Page
+          this.url = this.previusPage;
+          break;
+        default:
+          break;
+      }
+      let resp = await this.axios.get(this.url);
       if(resp.status === 200){
         this.data = resp.data;
         this.allCharacters = this.data['results'];
@@ -129,23 +131,6 @@ export default {
         this.isThereData = false;
       }
     },
-    async getPrevPageData(){
-      let resp = await this.axios.get(this.previusPage);
-      if(resp.status === 200){
-        this.data = resp.data;
-        this.allCharacters = this.data['results'];
-        this.nextPage = this.data['info']['next'];
-        this.previusPage = this.data['info']['prev'];
-        for(let character in this.allCharacters){
-          this.originArray.push(this.allCharacters[character].origin.name) 
-        }
-        let array = new Set(this.originArray);
-        this.originArray = [...array];
-        this.filterCharacters = this.allCharacters;
-      }else{
-        this.isThereData = false;
-      }
-    }
   },
   computed:{
     validateArray(){

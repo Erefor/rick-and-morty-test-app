@@ -58,7 +58,6 @@ export default {
         },
         getData(){
             this.$emit('getCharacter',{name:this.characterName});
-            this.characterName = '';
         }
     }
 }
