@@ -7,7 +7,6 @@
       @getCharacter="getCharacterFromInput"
       />
       <div class="row">
-        <h2 v-if="!validateArray">No data</h2>
         <CharacterCard 
         v-for="(character, index) in filterCharacters" 
         :key="index"
@@ -20,9 +19,9 @@
       </div>
       <ul class="pagination center">
         <li class="waves-effect"><a href="#!"><i class="material-icons" @click="getPrevPageData">chevron_left</i></a></li>
-        <li class="waves-effect"><a href="#!">prev</a></li>
-        <li class="waves-effect active"><a href="#!">1</a></li>
-        <li class="waves-effect"><a href="#!">next</a></li>
+        <li class="waves-effect"><a>{{prevPageInt}}</a></li>
+        <li class="waves-effect active"><a href="#!">{{currentPage}}</a></li>
+        <li class="waves-effect"><a href="#!">{{nextPageInt}}</a></li>
         <li class="waves-effect"><a href="#!" @click="getNextPageData"><i class="material-icons">chevron_right</i></a></li>
       </ul>
     </div>
@@ -49,6 +48,9 @@ export default {
       originArray : [],
       previusPage : '',
       nextPage : '',
+      nextPageInt : 0,
+      currentPage : 1,
+      prevPageInt: 0,
       isThereData : true,
       characterName : ''
     }
@@ -123,19 +125,17 @@ export default {
         let array = new Set(this.originArray);
         this.originArray = [...array];
         this.filterCharacters = this.allCharacters;
+        this.nextPageInt = this.nextPage.match(/\d+/)[0];
+        this.prevPageInt = this.previusPage.match(/\d+/)[0];
+        this.currentPage = this.nextPageInt -1;
+        if(this.prevPageInt === null && this.nextPageInt ===2){
+          this.prevPageInt = 0;
+          this.currentPage = 1;
+        }
       }else{
         this.isThereData = false;
       }
     },
-  },
-  computed:{
-    validateArray(){
-      if(this.filterCharacters.lenght === null || this.filterCharacters === null){
-        return false;
-      }else{
-        return true;
-      }
-    }
   }
 }
 </script>
