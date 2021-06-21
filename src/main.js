@@ -7,6 +7,7 @@ import App from './App.vue'
 import '../node_modules/materialize-css/dist/css/materialize.css'
 import MainPage from './Pages/MainPage.vue';
 import CharacterPage from './Pages/CharacterPage.vue';
+import NotFound from './Pages/404.vue';
 
 const store = createStore({
     state(){
@@ -20,7 +21,7 @@ const route = createRouter({
     routes : [
         {path:'/', component: MainPage},
         {path: '/character', component : CharacterPage},
-        {path: '/character/:id', component : CharacterPage}
+        {path: '/:notFound(.*)',component : NotFound}
     ]
 });
 const app = createApp(App);
