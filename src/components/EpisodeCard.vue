@@ -1,5 +1,5 @@
 <template>
-  <section class="col s3 hoverable">
+  <section class="col s3 hoverable truncate">
       <h5>{{episodeTitle}}</h5>
       <p>{{episodeDate}}</p>
   </section>

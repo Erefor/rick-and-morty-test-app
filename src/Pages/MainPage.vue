@@ -7,6 +7,7 @@
       @getCharacter="getCharacterFromInput"
       />
       <div class="row">
+        <h2 v-if="!validateArray">No data</h2>
         <CharacterCard 
         v-for="(character, index) in filterCharacters" 
         :key="index"
@@ -18,11 +19,11 @@
         />
       </div>
       <ul class="pagination center">
-        <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+        <li class="waves-effect"><a href="#!"><i class="material-icons" @click="getPrevPageData">chevron_left</i></a></li>
+        <li class="waves-effect"><a href="#!">prev</a></li>
         <li class="waves-effect active"><a href="#!">1</a></li>
-        <li class="waves-effect"><a href="#!">2</a></li>
-        <li class="waves-effect"><a href="#!">3</a></li>
-        <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+        <li class="waves-effect"><a href="#!">next</a></li>
+        <li class="waves-effect"><a href="#!" @click="getNextPageData"><i class="material-icons">chevron_right</i></a></li>
       </ul>
     </div>
 </template>
@@ -36,20 +37,26 @@ export default {
     Controls
   },
   async mounted(){
-    let resp = await this.axios.get('https://rickandmortyapi.com/api/character');
-    this.data = resp.data;
-    this.allCharacters = this.data['results'];
-    this.nextPage = this.data['info']['next'];
-    this.previusPage = this.data['info']['prev'];
-    for(let character in this.allCharacters){
-      this.originArray.push(this.allCharacters[character].origin.name) 
+    let resp = await this.axios.get(this.url);
+    if(resp.status === 200){
+      this.data = resp.data;
+      this.allCharacters = this.data['results'];
+      this.nextPage = this.data['info']['next'];
+      this.previusPage = this.data['info']['prev'];
+      for(let character in this.allCharacters){
+        this.originArray.push(this.allCharacters[character].origin.name) 
+      }
+      let array = new Set(this.originArray);
+      this.originArray = [...array];
+      this.filterCharacters = this.allCharacters;
+    }else{
+      this.isThereData = false;
     }
-    let array = new Set(this.originArray);
-    this.originArray = [...array];
-    this.filterCharacters = this.allCharacters;
+    
   },
   data(){
     return{
+      url : 'https://rickandmortyapi.com/api/character',
       data : '',
       allCharacters : [],
       filterCharacters : [],
@@ -92,13 +99,61 @@ export default {
     async getCharacterFromInput(character){
       this.filterCharacters = []; this.originArray = []; this.allCharacters = [];
       let data = await this.axios.get(`https://rickandmortyapi.com/api/character/?name=${character.name}`);
-      console.log(data);
-      this.filterCharacters = data.data['results'];
-      for(let character in this.filterCharacters){
-      this.originArray.push(this.filterCharacters[character].origin.name) 
+      if(data.status === 200){
+        this.allCharacters = data.data['results'];
+        this.filterCharacters = data.data['results'];
+        for(let character in this.filterCharacters){
+        this.originArray.push(this.filterCharacters[character].origin.name) 
+        }
+        let array = new Set(this.originArray);
+        this.originArray = [...array];
+      }else{
+        this.isThereData = false;
       }
-      let array = new Set(this.originArray);
-      this.originArray = [...array];
+      
+    },
+    async getNextPageData(){
+      let resp = await this.axios.get(this.nextPage);
+      if(resp.status === 200){
+        this.data = resp.data;
+        this.allCharacters = this.data['results'];
+        this.nextPage = this.data['info']['next'];
+        this.previusPage = this.data['info']['prev'];
+        for(let character in this.allCharacters){
+          this.originArray.push(this.allCharacters[character].origin.name) 
+        }
+        let array = new Set(this.originArray);
+        this.originArray = [...array];
+        this.filterCharacters = this.allCharacters;
+      }else{
+        this.isThereData = false;
+      }
+    },
+    async getPrevPageData(){
+      let resp = await this.axios.get(this.previusPage);
+      if(resp.status === 200){
+        this.data = resp.data;
+        this.allCharacters = this.data['results'];
+        this.nextPage = this.data['info']['next'];
+        this.previusPage = this.data['info']['prev'];
+        for(let character in this.allCharacters){
+          this.originArray.push(this.allCharacters[character].origin.name) 
+        }
+        let array = new Set(this.originArray);
+        this.originArray = [...array];
+        this.filterCharacters = this.allCharacters;
+      }else{
+        this.isThereData = false;
+      }
+    }
+  },
+  computed:{
+    validateArray(){
+      if(this.filterCharacters.lenght === null || this.filterCharacters === null){
+        return false;
+      }else{
+        return true;
+      }
     }
   }
 }

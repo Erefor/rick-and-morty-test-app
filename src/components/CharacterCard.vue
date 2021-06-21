@@ -5,7 +5,7 @@
         <div class="card-image">
           <img :src="img">
         </div>
-        <div class="card-content">
+        <div class="card-content truncate">
           <h5>{{name}}</h5>
           <p><strong>Estado:</strong> {{estado}}</p>
           <p><strong>Origen:</strong> {{origen}}</p>

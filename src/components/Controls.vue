@@ -38,17 +38,17 @@ export default {
     },
     methods:{
         filterOrigin(){
-            if(this.originName === 'Origin' || this.characterStatus === 'Status'){
+            if(this.originName === 'Origin' && this.characterStatus === 'Status'){
                 this.originName = 'All';
-                this.characterStatus = 'All';
+                this.characterStatus = 'Alive';
                 this.$emit('filterOrigin', {origin : this.originName, status : this.characterStatus});
             }else{
             this.$emit('filterOrigin', {origin : this.originName, status : this.characterStatus});
             }
         },
         filterStatus(){
-            if(this.characterStatus === 'Status' || this.originName === 'Origin'){
-                this.characterStatus = 'All';
+            if(this.characterStatus === 'Status' && this.originName === 'Origin'){
+                this.characterStatus = 'Alive';
                 this.originName = 'All';
                 this.$emit('filterStatus', {status : this.characterStatus, origin:this.originName});
             }else{
